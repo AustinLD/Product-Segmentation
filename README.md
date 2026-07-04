@@ -23,12 +23,29 @@ This is a portfolio project. The data is a real UK gift retailer's transaction l
 
 ```
 product-segmentation-analysis/
-├── data/         # Raw data (gitignored, see Data below)
+├── data/         # Chart images + raw data (raw file gitignored, see Data below)
 ├── sql/          # SQL scripts, named by analysis
 ├── notebooks/    # Jupyter notebook for cleaning, features, and clustering
-├── powerbi/      # .pbix dashboard
+├── powerbi/      # .pbix dashboard + build guide
+├── CASE_STUDY.md # Full write-up
 └── README.md
 ```
+
+## Dashboard
+
+A Power BI dashboard (`powerbi/product_segmentation.pbix`) built per `powerbi/POWERBI_GUIDE.md`: a cluster scatter, a revenue treemap, and a segment profile table.
+
+**Choosing k**: the elbow of within-cluster inertia and the silhouette score both point to five segments.
+
+![Choosing the number of clusters](data/fig_k_selection.png)
+
+**The five segments in feature space** (PCA projection):
+
+![Segments in feature space](data/fig_segments_pca.png)
+
+**Revenue by segment**: bestsellers dominate, but three smaller segments carry distinct operational risk.
+
+![Revenue by segment](data/fig_revenue_by_segment.png)
 
 ## Data
 
@@ -46,8 +63,14 @@ After cleaning, 4,479 products (with at least a little real sales history) carry
 
 The payoff is the contrast with a plain ABC/Pareto split. Pareto holds (the top 23% of SKUs make 80% of revenue), but ABC class A is not just bestsellers: it hides 80 steady items, 38 seasonal/wholesale-dependent items, and **12 returns-prone products**. A flat revenue ranking says "protect class A" uniformly. The clustering shows that a dozen of those top-revenue products are bleeding returns and 38 depend on one seasonal buyer, three very different problems a ranking cannot see. Returns-prone and seasonal SKUs also span all three ABC classes, so neither issue can be managed by revenue tier at all.
 
+See the full [Case Study](CASE_STUDY.md) for the complete write-up.
+
 ## Method Notes
 
 - Returns and cancellations (Invoice codes starting with `C`, negative quantities) are separated from sales and turned into a return-rate feature rather than dropped, since return behavior is itself a segment signal.
 - Monetary and count features are heavily right-skewed, so they are log-transformed before standardizing, which keeps a handful of blockbuster SKUs from dominating the distance metric.
 - Cluster count `k` is chosen from the elbow of within-cluster inertia together with the silhouette score, not by eye alone.
+
+## Case Study
+
+Full write-up (the problem, approach, insights, and what I would do with it) in [CASE_STUDY.md](CASE_STUDY.md).
